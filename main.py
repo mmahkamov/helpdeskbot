@@ -43,9 +43,12 @@ db = redis.StrictRedis(host=config['DB']['host'],
 def user_language(func):
     @wraps(func)
     def wrapped(update, context, *args, **kwargs):
-        lang = db.get(str(update.message.chat_id)).decode('UTF-8')
+        lang = db.get(str(update.message.chat_id))
 
-        logging.debug("user_language")
+        if lang is None:
+            lang = "en_US"
+        else:
+            lang = lang.decode('UTF-8')
 
         global _
 
